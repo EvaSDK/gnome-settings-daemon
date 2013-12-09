@@ -4,7 +4,6 @@ enabled_plugins =	\
 	a11y-keyboard	\
 	a11y-settings	\
 	clipboard	\
-	color		\
 	cursor		\
 	datetime	\
 	dummy		\
@@ -21,6 +20,12 @@ enabled_plugins =	\
 	$(NULL)
 
 disabled_plugins = $(NULL)
+
+if WITH_COLOR
+enabled_plugins += color
+else
+disabled_plugins += color
+endif
 
 if HAVE_PACKAGEKIT
 enabled_plugins += updates
