@@ -245,7 +245,17 @@ dnl ---------------------------------------------------------------------------
 dnl - color
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES(COLOR, [colord >= 1.0.2 gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION libcanberra-gtk3 lcms2 >= $LCMS_REQUIRED_VERSION])
+AC_ARG_ENABLE([color],
+  AS_HELP_STRING([--disable-color],
+                 [turn off color plugin]),
+       [],
+       [enable_color=yes])
+
+AS_IF([test "$enable_color" = "yes"],
+      [PKG_CHECK_MODULES(COLOR, [colord >= 1.0.2 gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION libcanberra-gtk3 lcms2 >= $LCMS_REQUIRED_VERSION])
+       AC_DEFINE(HAVE_COLOR, 1, [Define if color plugin is enabled])
+      ])
+AM_CONDITIONAL(BUILD_COLOR, test "x$enable_color" = "xyes")
 
 dnl ---------------------------------------------------------------------------
 dnl - datetime
@@ -270,22 +280,31 @@ case $host_os in
     if test "$host_cpu" = s390 -o "$host_cpu" = s390x; then
       have_wacom=no
     else
-      if test x$enable_gudev != xno; then
-        PKG_CHECK_MODULES(LIBWACOM, [libwacom >= $LIBWACOM_REQUIRED_VERSION])
-        PKG_CHECK_MODULES(WACOM, [libwacom >= $LIBWACOM_REQUIRED_VERSION x11 xi xtst gudev-1.0 gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION xorg-wacom librsvg-2.0 >= $LIBRSVG_REQUIRED_VERSION libnotify >= $LIBNOTIFY_REQUIRED_VERSION pango >= $PANGO_REQUIRED_VERSION])
-        PKG_CHECK_MODULES(WACOM_OLED, [gudev-1.0])
-      else
-        AC_MSG_ERROR([GUdev is necessary to compile Wacom support])
-      fi
-      AC_DEFINE_UNQUOTED(HAVE_WACOM, 1, [Define to 1 if wacom support is available])
-      have_wacom=yes
+      have_wacom=no
+      AS_IF([test "$enable_gudev" != "no"],
+        [AC_ARG_ENABLE([wacom],
+           AS_HELP_STRING([--disable-wacom],
+                          [turn off wacom plugin]),
+                          [],
+                          [enable_wacom=no]) dnl Default value
+         AS_IF([test "$enable_wacom" = "xyes"],
+               [
+                 PKG_CHECK_MODULES(LIBWACOM, [libwacom >= $LIBWACOM_REQUIRED_VERSION])
+                 PKG_CHECK_MODULES(WACOM, [libwacom >= $LIBWACOM_REQUIRED_VERSION x11 xi xtst gudev-1.0 gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION xorg-wacom librsvg-2.0 >= $LIBRSVG_REQUIRED_VERSION libnotify >= $LIBNOTIFY_REQUIRED_VERSION pango >= $PANGO_REQUIRED_VERSION])
+                 PKG_CHECK_MODULES(WACOM_OLED, [gudev-1.0])
+                 have_wacom=yes
+                 AC_DEFINE_UNQUOTED(HAVE_WACOM, 1, [Define to 1 if wacom support is available])
+               ])
+        ], [
+          AC_MSG_ERROR([GUdev is necessary to compile Wacom support])
+        ])
     fi
     ;;
   *)
     have_wacom=no
     ;;
 esac
-AM_CONDITIONAL(HAVE_WACOM, test x$have_wacom = xyes)
+AM_CONDITIONAL(BUILD_WACOM, test x$have_wacom = xyes)
 
 dnl ==============================================
 dnl smartcard section
