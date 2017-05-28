@@ -30,7 +30,6 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 org.gnome.SettingsDaemon.Rfkill.desktop: $(desktop_in_files) Makefile
 	$(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
 
-udevrulesdir = $(prefix)/lib/udev/rules.d
 udevrules_DATA = 61-gnome-settings-daemon-rfkill.rules
 
 EXTRA_DIST = $(udevrules_DATA) $(desktop_in_files)
