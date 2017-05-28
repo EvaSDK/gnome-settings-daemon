@@ -104,6 +104,15 @@ fi
 AM_CONDITIONAL(HAVE_GUDEV, test x$have_gudev = xyes)
 
 dnl ---------------------------------------------------------------------------
+dnl - Where to install udev rules
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH([udevrulesdir],
+            AS_HELP_STRING([--with-udevrulesdir=DIR], [Directory for udev rules files]),
+            [],
+            [with_udevrulesdir=$($PKG_CONFIG --variable=udevdir udev)/rules.d])
+AC_SUBST([udevrulesdir], [$with_udevrulesdir])
+
+dnl ---------------------------------------------------------------------------
 dnl - ALSA integration (default enabled)
 dnl ---------------------------------------------------------------------------
 ALSA_PKG=""
