@@ -4,7 +4,6 @@ enabled_plugins =	\
 	a11y-keyboard	\
 	a11y-settings	\
 	clipboard	\
-	color		\
 	datetime	\
 	dummy		\
 	power		\
@@ -22,13 +21,19 @@ enabled_plugins =	\
 
 disabled_plugins = $(NULL)
 
+if BUILD_COLOR
+enabled_plugins += color
+else
+disabled_plugins += color
+endif
+
 if SMARTCARD_SUPPORT
 enabled_plugins += smartcard
 else
 disabled_plugins += smartcard
 endif
 
-if HAVE_WACOM
+if BUILD_WACOM
 enabled_plugins += wacom
 else
 disabled_plugins += wacom

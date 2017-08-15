@@ -49,14 +49,17 @@ libcommon_la_CPPFLAGS = \
 	-I$(top_builddir)/gnome-settings-daemon	\
 	-I$(top_srcdir)/data/
 
-libcommon_la_CFLAGS = $(COMMON_CFLAGS)
+libcommon_la_CFLAGS = \
+	$(COMMON_CFLAGS) \
+	$(LIBWACOM_CFLAGS)
 
 libcommon_la_LDFLAGS = \
 	$(GSD_PLUGIN_LDFLAGS)
 
 libcommon_la_LIBADD  = \
 	$(top_builddir)/gnome-settings-daemon/libgsd.la \
-	$(COMMON_LIBS)
+	$(COMMON_LIBS) \
+	$(LIBWACOM_LIBS)
 
 libexec_PROGRAMS = gsd-test-input-helper
 
