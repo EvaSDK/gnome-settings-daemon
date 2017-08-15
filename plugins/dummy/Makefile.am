@@ -25,7 +25,10 @@ desktop_DATA =
 if !SMARTCARD_SUPPORT
 desktop_DATA += org.gnome.SettingsDaemon.Smartcard.desktop
 endif
-if !HAVE_WACOM
+if !BUILD_COLOR
+desktop_DATA += org.gnome.SettingsDaemon.Color.desktop
+endif
+if !BUILD_WACOM
 desktop_DATA += org.gnome.SettingsDaemon.Wacom.desktop
 endif
 if !BUILD_PRINT_NOTIFICATIONS
