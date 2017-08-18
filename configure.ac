@@ -140,15 +140,20 @@ AC_ARG_ENABLE(wayland,
         AS_HELP_STRING([--disable-wayland],[Disable wayland support (default: auto)]),
         enable_wayland=$enableval, enable_wayland=auto)
 if test x$enable_wayland != xno; then
+        AS_IF([test "$have_udev" = no],
+              [AC_MSG_ERROR([udev is required for Wayland support])])
+
         PKG_CHECK_MODULES(WAYLAND, wayland-client, have_wayland=yes, have_wayland=no)
         if test x$have_wayland = xyes; then
                 AC_DEFINE(HAVE_WAYLAND, 1, [Define if libwayland-client is available])
+		GUDEV_PKG="$GUDEV_PKG gdk-wayland-3.0"
         else
                 if test x$enable_wayland = xyes; then
                         AC_MSG_ERROR([Wayland enabled but not found])
                 fi
         fi
 fi
+AM_CONDITIONAL(HAVE_WAYLAND, test x$have_wayland = xyes)
 
 dnl ================================================================
 dnl Plugins
